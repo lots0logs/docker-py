@@ -23,8 +23,8 @@ from docker.auth import (
     resolve_repository_name, resolve_authconfig, encode_header
 )
 
-from . import base
-from .helpers import make_tree
+from .. import base
+from ..helpers import make_tree
 
 
 TEST_CERT_DIR = os.path.join(
