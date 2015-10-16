@@ -23,10 +23,10 @@ unit-test-py3: build-py3
 	docker run docker-py3 py.test tests/unit
 
 integration-test: build
-	docker run -v /var/run/docker.sock:/var/run/docker.sock docker-py py.test -rxs tests/integration
+	docker run -v /var/run/docker.sock:/var/run/docker.sock docker-py py.test tests/integration
 
 integration-test-py3: build-py3
-	docker run -v /var/run/docker.sock:/var/run/docker.sock docker-py3 py.test -rxs tests/integration
+	docker run -v /var/run/docker.sock:/var/run/docker.sock docker-py3 py.test tests/integration
 
 integration-dind: build build-py3
 	docker run -d --name dpy-dind --env="DOCKER_HOST=tcp://localhost:2375" --privileged dockerswarm/dind:1.8.1 docker -d -H tcp://0.0.0.0:2375

@@ -175,9 +175,6 @@ class DockerApiTest(DockerClientTest):
             url, '{0}{1}'.format(url_base, 'hello/somename/world')
         )
 
-    #########################
-    #   INFORMATION TESTS   #
-    #########################
     def test_version(self):
         self.client.version()
 
@@ -301,73 +298,6 @@ class DockerApiTest(DockerClientTest):
 
         assert c.base_url == "http://hostname:1234"
 
-    def test_exec_create(self):
-        self.client.exec_create(fake_api.FAKE_CONTAINER_ID, ['ls', '-1'])
-
-        args = fake_request.call_args
-        self.assertEqual(
-            'POST',
-            args[0][0], url_prefix + 'containers/{0}/exec'.format(
-                fake_api.FAKE_CONTAINER_ID
-            )
-        )
-
-        self.assertEqual(
-            json.loads(args[1]['data']), {
-                'Tty': False,
-                'AttachStdout': True,
-                'Container': fake_api.FAKE_CONTAINER_ID,
-                'Cmd': ['ls', '-1'],
-                'Privileged': False,
-                'AttachStdin': False,
-                'AttachStderr': True,
-                'User': ''
-            }
-        )
-
-        self.assertEqual(args[1]['headers'],
-                         {'Content-Type': 'application/json'})
-
-    def test_exec_start(self):
-        self.client.exec_start(fake_api.FAKE_EXEC_ID)
-
-        args = fake_request.call_args
-        self.assertEqual(
-            args[0][1], url_prefix + 'exec/{0}/start'.format(
-                fake_api.FAKE_EXEC_ID
-            )
-        )
-
-        self.assertEqual(
-            json.loads(args[1]['data']), {
-                'Tty': False,
-                'Detach': False,
-            }
-        )
-
-        self.assertEqual(args[1]['headers'],
-                         {'Content-Type': 'application/json'})
-
-    def test_exec_inspect(self):
-        self.client.exec_inspect(fake_api.FAKE_EXEC_ID)
-
-        args = fake_request.call_args
-        self.assertEqual(
-            args[0][1], url_prefix + 'exec/{0}/json'.format(
-                fake_api.FAKE_EXEC_ID
-            )
-        )
-
-    def test_exec_resize(self):
-        self.client.exec_resize(fake_api.FAKE_EXEC_ID, height=20, width=60)
-
-        fake_request.assert_called_with(
-            'POST',
-            url_prefix + 'exec/{0}/resize'.format(fake_api.FAKE_EXEC_ID),
-            params={'h': 20, 'w': 60},
-            timeout=DEFAULT_TIMEOUT_SECONDS
-        )
-
     def test_remove_link(self):
         self.client.remove_container(fake_api.FAKE_CONTAINER_ID, link=True)
 
@@ -377,10 +307,6 @@ class DockerApiTest(DockerClientTest):
             params={'v': False, 'link': True, 'force': False},
             timeout=DEFAULT_TIMEOUT_SECONDS
         )
-
-    #######################
-    #  HOST CONFIG TESTS  #
-    #######################
 
     def test_create_host_config_secopt(self):
         security_opt = ['apparmor:test_profile']
